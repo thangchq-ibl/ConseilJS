@@ -32,6 +32,7 @@ data ->
   | %lparen _ %doubleArgData _ data _ data _ %rparen {% doubleArgDataWithParenToJson %}
 
 _ -> [\s]:*
+__ -> [\s]:+
 
 @{%
   /**

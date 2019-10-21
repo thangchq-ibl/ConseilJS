@@ -183,8 +183,10 @@ instruction ->
 # Helper grammar for list of michelson data types.
 subData ->
     %lbrace _ %rbrace {% d => "[]" %}
-  | "{" _ (data ";" _):+ "}" {% instructionSetToJsonSemi %}
-  | "(" _ (data ";" _):+ ")" {% instructionSetToJsonSemi %}
+  | "{" _ (data ";":? _):+ "}" {% instructionSetToJsonSemi %}
+  | "(" _ (data ";":? _):+ ")" {% instructionSetToJsonSemi %}
+  | "{" _ (data __ ";":? _):+ "}" {% instructionSetToJsonSemi %}
+  | "(" _ (data __ ";":? _):+ ")" {% instructionSetToJsonSemi %}
 
 # Helper grammar for list of pairs of michelson data types.
 subElt ->
@@ -196,6 +198,7 @@ elt -> %elt _ data _ data {% doubleArgKeywordToJson %}
 
 # Helper grammar for whitespace.
 _ -> [\s]:*
+__ -> [ ]:+
 
 # Helper grammar for semicolons.
 semicolons -> [;]:?
