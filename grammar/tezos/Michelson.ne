@@ -46,12 +46,12 @@ const lexer = moo.compile({
     parameter: [ 'parameter' , 'Parameter'],
     storage: ['Storage', 'storage'],
     code: ['Code', 'code'],
-    comparableType: ['int', 'nat', 'string', 'bytes', 'mutez', 'bool', 'key_hash', 'timestamp'],
+    comparableType: ['int', 'nat', 'string', 'bytes', 'mutez', 'bool', 'key_hash', 'timestamp', 'chain_id'],
     constantType: ['key', 'unit', 'signature', 'operation', 'address'],
     singleArgType: ['option', 'list', 'set', 'contract'],
     doubleArgType: ['pair', 'or', 'lambda', 'map', 'big_map'],
     baseInstruction: ['ABS', 'ADD', 'ADDRESS', 'AMOUNT', 'AND', 'BALANCE', 'BLAKE2B', 'CAR', 'CAST', 'CDR', 'CHECK_SIGNATURE',
-        'COMPARE', 'CONCAT', 'CONS', 'CONTRACT', 'CREATE_ACCOUNT', 'CREATE_CONTRACT', 'DIP', 'DROP', 'DUP', 'EDIV', 'EMPTY_MAP',
+        'COMPARE', 'CONCAT', 'CONS', 'CONTRACT', 'CREATE_CONTRACT', 'DIP', 'DROP', 'DUP', 'EDIV', 'EMPTY_MAP',
         'EMPTY_SET', 'EQ', 'EXEC', 'FAIL', 'FAILWITH', 'GE', 'GET', 'GT', 'HASH_KEY', 'IF', 'IF_CONS', 'IF_LEFT', 'IF_NONE',
         'IF_RIGHT', 'IMPLICIT_ACCOUNT', 'INT', 'ISNAT', 'ITER', 'LAMBDA', 'LE', 'LEFT', 'LOOP', 'LOOP_LEFT', 'LSL', 'LSR', 'LT',
         'MAP', 'MEM', 'MUL', 'NEG', 'NEQ', 'NIL', 'NONE', 'NOT', 'NOW', 'OR', 'PACK', 'PAIR', /*'PUSH',*/ 'REDUCE', 'RENAME', 'RIGHT', 'SELF',
@@ -60,7 +60,8 @@ const lexer = moo.compile({
         'UNPAIR', 'UNPAPAIR', // TODO: macro
         'IF_SOME', // TODO: macro
         'IFCMPEQ', 'IFCMPNEQ', 'IFCMPLT', 'IFCMPGT', 'IFCMPLE', 'IFCMPGE', 'CMPEQ', 'CMPNEQ', 'CMPLT', 'CMPGT', 'CMPLE',
-        'CMPGE', 'IFEQ', 'NEQ', 'IFLT', 'IFGT', 'IFLE', 'IFGE' // TODO: should be separate
+        'CMPGE', 'IFEQ', 'NEQ', 'IFLT', 'IFGT', 'IFLE', 'IFGE', // TODO: should be separate
+        'DIG', 'DUG', 'EMPTY_BIG_MAP', 'APPLY', 'CHAIN_ID' // P005
         ],
     macroCADR: macroCADR,
     macroDIP: macroDIP,
@@ -180,6 +181,8 @@ subData ->
     %lbrace _ %rbrace {% d => "[]" %}
   | "{" _ (data ";" _):+ "}" {% instructionSetToJsonSemi %}
   | "(" _ (data ";" _):+ ")" {% instructionSetToJsonSemi %}
+  | "{" _ (data _ ";":? _):+ "}" {% instructionSetToJsonSemi %}
+  | "(" _ (data _ ";":? _):+ ")" {% instructionSetToJsonSemi %}
 
 # Helper grammar for list of pairs of michelson data types.
 subElt ->
@@ -188,9 +191,9 @@ subElt ->
   | "(" _ (elt ";":? _):+ ")" {% instructionSetToJsonSemi %}
 elt -> %elt _ data _ data {% doubleArgKeywordToJson %}
 
-
 # Helper grammar for whitespace.
 _ -> [\s]:*
+__ -> [\s]:+
 
 # Helper grammar for semicolons.
 semicolons -> [;]:?
