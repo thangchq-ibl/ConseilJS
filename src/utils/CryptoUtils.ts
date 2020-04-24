@@ -1,6 +1,5 @@
 import * as blakejs from 'blakejs';
 import bigInt from 'big-integer';
-import zxcvbn from 'zxcvbn'; // TODO: remove, should be added in the implementing app
 const wrapper = require('./WrapperWrapper');
 
 /**
@@ -26,7 +25,7 @@ export namespace CryptoUtils {
      * @returns {Buffer} Concatenated bytes of nonce and cipher text
      */
     export async function encryptMessage(message: string, passphrase: string, salt: Buffer) : Promise<Buffer> {
-        const passwordStrength = getPasswordStrength(passphrase);
+        const passwordStrength = 4
         if (passwordStrength < 3) { throw new Error('The password strength should not be less than 3.'); }
 
         const messageBytes = Buffer.from(message);
@@ -65,10 +64,6 @@ export namespace CryptoUtils {
      * 
      * @returns {number} Password score
      */
-    export function getPasswordStrength(password: string) : number {
-        const results = zxcvbn(password);
-        return results.score;
-    }
 
     /**
      * Generate key pair from seed.

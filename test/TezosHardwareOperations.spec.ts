@@ -1,6 +1,5 @@
 import {expect} from "chai";
-import {TezosWalletUtil, TezosLedgerWallet} from "../src";
-import {HardwareDeviceType} from "../src/types/wallet/HardwareDeviceType";
+import {TezosWalletUtil} from "../src";
 
 import {TezosNodeWriter} from "../src";
 
@@ -37,7 +36,7 @@ let testCondition = true;
 
 describe('Ledger Test', () => {
     before(async () => {
-        keyStore = await TezosLedgerWallet.unlockAddress(HardwareDeviceType.LedgerNanoS, derivationPath).catch(() => false);
+        keyStore = null
 
         if (!keyStore) { testCondition = false; }
         const info1 = walletInfoLists[1];
