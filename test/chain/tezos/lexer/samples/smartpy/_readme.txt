@@ -1,1 +1,0 @@
-Sample contracts from the smartpy.io online editor, retrieved in July 2019.
